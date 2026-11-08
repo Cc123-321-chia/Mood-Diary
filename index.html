@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mood Diary · Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <!-- [DIARY CRUD] Editor styling -->
+  <link rel="stylesheet" href="css/diary-editor.css?v=20261201">
+</head>
+<body data-theme="mint-choco">
+
+<div class="dashboard">
+  <!-- ===== TOP BAR ===== -->
+  <div class="top-bar">
+    <div class="profile-section">
+      <div class="avatar-wrapper">
+        <div class="avatar" id="avatarContainer"></div>
+      </div>
+      <div class="user-info">
+        <span class="user-name" id="displayName">Loading…</span>
+        <span class="user-email" id="displayEmail"></span>
+      </div>
+    </div>
+    <div class="top-actions">
+      <button class="settings-btn" id="settingsToggle"><i class="fas fa-cog"></i></button>
+
+      <button class="btn-logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+    </div>
+  </div>
+
+  <!-- ===== SETTINGS PANEL (hidden by default) ===== -->
+  <div class="settings-panel" id="settingsPanel">
+    <div class="row" style="justify-content: flex-end; margin-bottom: 0.5rem;">
+      <button class="btn-delete-account" id="deleteAccountBtn" type="button">
+        <i class="fas fa-trash"></i> Delete Account
+      </button>
+    </div>
+    <div class="row">
+      <label>Avatar</label>
+      <div class="settings-avatar-row">
+        <div class="settings-avatar-preview" id="settingsAvatarPreview"></div>
+        <button class="avatar-upload-btn" id="settingsAvatarUploadBtn">
+          <i class="fas fa-upload"></i> Upload Photo
+        </button>
+        <input type="file" class="avatar-upload-input" id="settingsAvatarInput" accept="image/*">
+      </div>
+    </div>
+    <div class="row">
+      <label for="nameInput">Name</label>
+      <input type="text" id="nameInput" placeholder="Your name">
+    </div>
+    <div class="row">
+      <label>Email</label>
+      <input type="text" id="emailDisplay" readonly>
+    </div>
+    <div class="row" style="align-items: flex-start;">
+      <label>Theme</label>
+      <div class="theme-grid" id="themeGrid"></div>
+    </div>
+    <div class="row" style="justify-content: space-between; margin-top: 0.5rem;">
+      <button class="btn-save" id="saveSettingsBtn"><i class="fas fa-check"></i> Save</button>
+      <button class="btn-cancel" id="cancelSettingsBtn"><i class="fas fa-times"></i> Cancel</button>
+    </div>
+  </div>
+
+  <!-- ===== CALENDAR ===== -->
+  <div class="calendar-section">
+    <div class="calendar-header">
+      <div class="calendar-month-year" id="calendarMonthYear">Loading…</div>
+      <div class="calendar-nav">
+        <button id="prevMonthBtn"><i class="fas fa-chevron-left"></i></button>
+        <button id="nextMonthBtn"><i class="fas fa-chevron-right"></i></button>
+      </div>
+    </div>
+    <div class="calendar-weekdays">
+      <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+    </div>
+    <div class="calendar-grid" id="calendarGrid"></div>
+  </div>
+
+  <!-- ===== DIARY CARDS ===== -->
+  <div class="diary-section-title">
+    <i class="fas fa-book-open"></i> My Diary Entries
+  </div>
+  <div class="diary-grid" id="diaryGrid"></div>
+  <div class="hint">✨ Click any diary card to read the full entry</div>
+</div>
+
+<!-- FIXED WRITE DIARY BUTTON [DIARY CRUD] -->
+<div class="create-fixed">
+  <button class="create-btn" id="createDiaryBtn"><i class="fas fa-pen-fancy"></i> Write Diary</button>
+</div>
+
+<!-- FULLPAGE DETAIL VIEW -->
+<div class="fullpage-overlay" id="fullpageOverlay">
+  <button class="fullpage-close" id="fullpageCloseBtn"><i class="fas fa-times"></i></button>
+  <div class="fullpage-content" id="fullpageContent"></div>
+</div>
+
+<!-- [DIARY CRUD] Must load before dashboard.js -->
+<script src="js/dashboard.js?v=20261118"></script>
+<script src="js/diary-crud.js?v=20261118"></script>
+</body>
+</html>

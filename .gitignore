@@ -1,0 +1,25 @@
+# Mac
+.DS_Store
+
+# Local configuration and secrets
+config/db.php
+config/db.local.php
+config/mailer.php
+config/mail_config.php
+config/password_reset.php
+.env
+
+# Dependencies
+vendor/
+node_modules/
+
+# User uploads
+uploads/
+
+# Sensitive files
+auth_handoff.zip
+database/admin_temporary_password.sql
+database/mood_diary_full.sql
+
+# Logs
+*.log

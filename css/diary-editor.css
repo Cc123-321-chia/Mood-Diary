@@ -1,0 +1,343 @@
+/* ============================================================
+   Diary CRUD extension — v20261117
+   (no drag-and-drop; previews are simple removable thumbnails)
+   ============================================================ */
+
+/* ---------- Editor backdrop / panel ---------- */
+.diary-editor-backdrop{
+  position:fixed;inset:0;z-index:2600;
+  background:rgba(20,36,33,.7);
+  display:none;align-items:flex-start;justify-content:center;
+  overflow-y:auto;padding:32px 12px;
+  backdrop-filter:blur(8px);
+}
+.diary-editor-backdrop.active{display:flex}
+.diary-editor-panel{
+  background:var(--modal-bg);color:var(--text-primary);
+  width:min(740px,100%);
+  border:1px solid var(--border-light);
+  border-radius:27px;box-shadow:var(--shadow);
+  padding:25px;max-height:none;
+}
+.diary-editor-heading{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:20px}
+.diary-editor-heading h2{font-size:1.5rem}
+.diary-editor-heading button{
+  border:1px solid var(--border-light);
+  background:var(--card-bg);color:var(--text-primary);
+  border-radius:50%;width:38px;height:38px;cursor:pointer;
+}
+.diary-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+.diary-field{display:flex;flex-direction:column;gap:6px}
+.diary-field.wide{grid-column:1/-1}
+.diary-field label{font-size:.9rem;font-weight:600;color:var(--text-secondary)}
+.diary-field input,.diary-field textarea,.diary-field select{
+  background:var(--card-bg);color:var(--text-primary);
+  border:1px solid var(--border-light);border-radius:14px;
+  padding:12px;font:inherit;min-width:0;
+}
+.diary-field textarea{min-height:170px;resize:vertical}
+.diary-field :focus-visible{outline:2px solid var(--accent)}
+
+/* ---------- Upload zone ---------- */
+/* ---------- Upload zone (pretty drop area) ---------- */
+.diary-upload-zone {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 32px 20px;
+  border: 2px dashed var(--accent-light);
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at top left, rgba(255,255,255,0.35), transparent 60%),
+    var(--card-bg);
+  cursor: pointer;
+  transition: border-color .2s ease, background .2s ease, transform .15s ease, box-shadow .2s ease;
+  overflow: hidden;
+}
+
+/* Soft hover */
+.diary-upload-zone:hover {
+  border-color: var(--accent);
+  box-shadow: 0 8px 22px -12px var(--accent);
+}
+
+/* When dragging over */
+.diary-upload-zone.drag-over {
+  border-color: var(--accent);
+  border-style: solid;
+  background:
+    radial-gradient(circle at top left, rgba(255,255,255,0.6), transparent 60%),
+    var(--calendar-cell-hover);
+  transform: scale(1.01);
+  box-shadow: 0 10px 26px -12px var(--accent);
+}
+
+/* The icon on top */
+.diary-upload-zone::before {
+  content: "\f574";                    /* fa-cloud-upload-alt */
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  font-size: 2rem;
+  line-height: 1;
+  color: var(--accent);
+  opacity: .85;
+  transition: transform .2s ease, opacity .2s ease;
+}
+
+.diary-upload-zone:hover::before,
+.diary-upload-zone.drag-over::before {
+  transform: translateY(-3px) scale(1.05);
+  opacity: 1;
+}
+
+/* Hide the native file input visually but keep it clickable via label */
+.diary-upload-zone input[type="file"] {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  font-size: 0;                        /* hide the browser default text */
+}
+
+/* The helper text under the icon */
+.diary-upload-zone p {
+  position: relative;                  /* above the invisible input */
+  z-index: 1;
+  margin: 0;
+  font-size: .88rem;
+  color: var(--text-secondary);
+  text-align: center;
+  line-height: 1.5;
+  max-width: 320px;
+}
+
+.diary-upload-zone p::first-line {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.diary-form-help {
+  font-size: .8rem;
+  color: var(--text-secondary);
+  margin-top: 8px;
+}
+
+/* ---------- Preview grid (no drag) ---------- */
+.diary-previews{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(112px,1fr));
+  gap:10px;margin-top:12px;
+}
+.diary-preview{
+  position:relative;
+  border:1px solid var(--border-light);
+  border-radius:12px;padding:7px;
+  background:var(--card-bg);overflow:hidden;min-width:0;
+}
+.diary-preview img,.diary-preview video{
+  width:100%;height:85px;object-fit:cover;border-radius:8px;
+  pointer-events:none;
+}
+.diary-preview small{
+  display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.diary-preview button.remove-preview{
+  position:absolute;top:4px;left:4px;
+  background:#7c2828;color:#fff;border:0;border-radius:50%;
+  height:25px;width:25px;cursor:pointer;z-index:2;
+}
+
+/* ---------- Editor form actions ---------- */
+.diary-form-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:20px}
+.diary-form-actions button,.diary-small-btn{
+  border-radius:30px;border:1px solid var(--border-light);
+  padding:10px 18px;cursor:pointer;font-weight:600;
+  background:var(--card-bg);color:var(--text-primary);
+}
+.diary-form-actions .diary-primary{background:var(--button-bg);color:#fff;border:0}
+.diary-form-actions .diary-primary:hover{background:var(--button-hover)}
+.diary-danger-btn{color:#b63a3a!important}
+
+/* ---------- Toast ---------- */
+.diary-demo-notice{
+  position:fixed;top:15px;left:50%;transform:translateX(-50%);z-index:2700;
+  background:var(--modal-bg);color:var(--text-primary);
+  border:1px solid var(--border-light);box-shadow:var(--shadow);
+  border-radius:14px;padding:12px 18px;
+  max-width:min(540px,90vw);font-size:.85rem;display:none;
+}
+.diary-demo-notice.visible{display:block}
+.diary-demo-notice[data-kind="success"]{border-color:#4f8a64}
+.diary-demo-notice[data-kind="error"]{border-color:#b63a3a}
+
+.diary-editor-error{color:#b63a3a;font-size:.85rem;min-height:1.1em;margin-top:8px}
+
+@media(max-width:550px){
+  .diary-form-grid{grid-template-columns:1fr}
+  .diary-field.wide{grid-column:auto}
+  .diary-editor-panel{padding:18px}
+  .diary-form-actions{flex-wrap:wrap}
+}
+
+/* ---------- Duplicate-day dialog ---------- */
+.dup-dialog-backdrop{
+  position:fixed;inset:0;z-index:2800;
+  background:rgba(20,36,33,.7);
+  display:none;align-items:center;justify-content:center;
+  padding:16px;backdrop-filter:blur(6px);
+}
+.dup-dialog-backdrop.active{display:flex}
+.dup-dialog{
+  background:var(--modal-bg);color:var(--text-primary);
+  border:1px solid var(--border-light);border-radius:22px;
+  box-shadow:var(--shadow);width:min(420px,100%);
+  padding:24px;text-align:center;
+}
+.dup-dialog .dup-icon{font-size:2rem;color:var(--accent);margin-bottom:10px}
+.dup-dialog h3{margin:0 0 8px;font-size:1.2rem}
+.dup-dialog p{margin:0 0 18px;font-size:.92rem;color:var(--text-secondary);line-height:1.5}
+.dup-dialog-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.dup-dialog-actions button{
+  border-radius:30px;padding:10px 20px;font-weight:600;cursor:pointer;
+  border:1px solid var(--border-light);
+  background:var(--card-bg);color:var(--text-primary);
+}
+.dup-dialog-actions .primary{background:var(--button-bg);color:#fff;border:0}
+.dup-dialog-actions .primary:hover{background:var(--button-hover)}
+
+/* ---------- Detail media area ---------- */
+.detail-media-wrap{margin:0 0 14px}
+.detail-media{
+  position:relative;
+  height:33vh;
+  min-height:200px;
+  background:transparent;
+  overflow:hidden;
+  border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+}
+.detail-media-track{position:relative;width:100%;height:100%}
+.detail-media-slide{
+  display:none;width:100%;height:100%;
+  align-items:center;justify-content:center;
+}
+.detail-media-slide.active{display:flex}
+.detail-media-slide img{
+  max-width:100%;max-height:100%;object-fit:contain;
+  display:block;cursor:zoom-in;border-radius:6px;
+}
+.detail-media-slide video{
+  max-width:100%;max-height:100%;display:block;
+  background:#000;border-radius:6px;
+}
+.detail-media-placeholder{
+  display:grid;place-items:center;
+  width:100%;height:100%;
+  color:var(--text-secondary);font-size:2rem;opacity:.5;
+}
+
+.detail-media-nav{position:absolute;inset:0;pointer-events:none}
+.detail-media-arrow{
+  position:absolute;top:50%;transform:translateY(-50%);
+  width:36px;height:36px;border-radius:50%;border:0;
+  background:rgba(0,0,0,.45);color:#fff;cursor:pointer;
+  display:grid;place-items:center;font-size:.85rem;
+  pointer-events:auto;
+  transition:background .15s ease,transform .15s ease;
+}
+.detail-media-arrow:hover{background:rgba(0,0,0,.7);transform:translateY(-50%) scale(1.06)}
+.detail-media-arrow.prev{left:12px}
+.detail-media-arrow.next{right:12px}
+
+.detail-media-dots{
+  display:flex;gap:6px;align-items:center;justify-content:center;
+  padding:10px 0 0;
+}
+.detail-media-dot{
+  width:8px;height:8px;border-radius:50%;border:0;
+  background:var(--border-light);
+  padding:0;cursor:pointer;
+  transition:width .2s ease,background .2s ease,border-radius .2s ease;
+}
+.detail-media-dot.active{
+  width:22px;border-radius:999px;background:var(--accent);
+}
+
+/* ---------- Side actions (horizontal, top-right of content) ---------- */
+.fullpage-content{position:relative}
+.detail-side-actions{
+  position:absolute;
+  top:14px;
+  right:14px;
+  z-index:5;
+  display:flex;
+  flex-direction:row;
+  align-items:center;
+  gap:8px;
+}
+.detail-media-action{
+  width:38px;height:38px;border-radius:50%;
+  border:1px solid rgba(0,0,0,.15);
+  background:rgba(255,255,255,.92);color:#333;
+  display:grid;place-items:center;cursor:pointer;font-size:.85rem;
+  box-shadow:0 2px 8px rgba(0,0,0,.2);
+  transition:background .15s ease,color .15s ease,transform .15s ease;
+}
+.detail-media-action:hover{transform:scale(1.06)}
+.detail-media-action.edit:hover{background:var(--accent);color:#fff}
+.detail-media-action.delete{color:#b63a3a}
+.detail-media-action.delete:hover{background:#b63a3a;color:#fff}
+
+/* ---------- Lightbox ---------- */
+.media-lightbox{
+  position:fixed;inset:0;z-index:2900;
+  background:rgba(0,0,0,.92);
+  display:grid;place-items:center;padding:24px;
+  cursor:zoom-out;
+}
+.media-lightbox img{
+  max-width:95vw;max-height:90vh;object-fit:contain;
+  box-shadow:0 4px 30px rgba(0,0,0,.6);border-radius:4px;
+}
+.media-lightbox-close{
+  position:absolute;top:16px;right:16px;
+  width:40px;height:40px;border-radius:50%;border:0;
+  background:rgba(255,255,255,.15);color:#fff;font-size:1rem;
+  cursor:pointer;display:grid;place-items:center;
+}
+.media-lightbox-close:hover{background:rgba(255,255,255,.3)}
+
+/* ---------- Delete Account button (settings panel) ---------- */
+.btn-delete-account {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-light);
+  padding: 0.35rem 0.9rem;
+  border-radius: 30px;
+  font-weight: 500;
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  opacity: 0.7;
+}
+.btn-delete-account:hover {
+  background: #b63a3a;
+  color: #fff;
+  border-color: #b63a3a;
+  opacity: 1;
+}
+.btn-delete-account:disabled {
+  opacity: 0.35;
+  cursor: wait;
+}
+.btn-delete-account i {
+  font-size: 0.7rem;
+}

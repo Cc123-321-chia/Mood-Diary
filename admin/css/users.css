@@ -1,0 +1,175 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 40px 20px;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #eaf3ef;
+    color: #1f3a36;
+}
+
+.container {
+    max-width: 1100px;
+    margin: auto;
+}
+
+h1 {
+    margin-bottom: 8px;
+}
+
+.subtitle {
+    color: #64756f;
+    margin-bottom: 25px;
+}
+
+.panel {
+    background: white;
+    padding: 25px;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+}
+
+.search-form {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+input {
+    padding: 11px;
+    border: 1px solid #c2d9d2;
+    border-radius: 8px;
+    font: inherit;
+}
+
+.search-form input {
+    flex: 1;
+    min-width: 0;
+    height: 42px;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 15px;
+    min-height: 42px;
+    border: none;
+    border-radius: 8px;
+    background: #5f7e73;
+    color: white;
+    font: inherit;
+    font-size: 13px;
+    text-decoration: none;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.btn:hover {
+    background: #46685c;
+}
+
+.btn-danger {
+    background: #b95656;
+}
+
+.btn-danger:hover {
+    background: #943d3d;
+}
+
+.actions {
+    display: flex;
+    gap: 8px;
+}
+
+.message {
+    padding: 13px;
+    margin-bottom: 20px;
+    background: #e2f1e8;
+    border-radius: 8px;
+}
+
+.message[hidden] {
+    display: none;
+}
+
+.table-wrap {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th,
+td {
+    padding: 14px;
+    text-align: left;
+    border-bottom: 1px solid #e6eeeb;
+}
+
+th {
+    background: #f5faf7;
+}
+
+.empty {
+    text-align: center;
+    color: #777;
+    padding: 30px;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 10;
+}
+
+.modal.open {
+    display: flex;
+}
+
+.modal-content {
+    background: white;
+    padding: 28px;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 450px;
+}
+
+.modal-content label {
+    display: block;
+    margin: 15px 0 6px;
+    font-weight: 600;
+}
+
+.modal-content input[type="text"],
+.modal-content input[type="email"] {
+    width: 100%;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 25px;
+}
+
+@media (max-width: 600px) {
+    .search-form,
+    .actions {
+        flex-wrap: wrap;
+    }
+
+    .panel {
+        padding: 18px;
+    }
+}

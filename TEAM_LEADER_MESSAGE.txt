@@ -1,0 +1,29 @@
+I combined my Diary Management part using your latest mood_diary v2 as the base, so your new login/logout/session/password-reset files are kept.
+
+My functions now use the real logged-in session instead of the old test user_id=1:
+- Create Diary
+- Edit Diary
+- Delete Diary
+- Upload Photos / Videos
+
+Main new files from my part:
+- js/diary-crud.js
+- css/diary-editor.css
+- api/_diary_common.php
+- api/save_diary.php
+- api/delete_diary.php
+- api/upload_media.php
+- uploads/media/.htaccess
+
+Existing files I changed only for integration:
+- index.html
+- js/dashboard.js
+- api/get_diaries.php
+- config/auth.php (added CSRF helper)
+- api/update_profile.php (CSRF integration)
+
+I kept your logout/session redirect logic. The diary APIs now use requireUser(), ownership checks (diary_id + user_id), prepared statements, CSRF validation and server-side upload validation.
+
+I also separated local DB settings so my port 3307 will not force your machine to use 3307.
+
+Important security note: the SMTP App Password that was inside the shared source should be revoked and replaced with a new local/env secret. I removed the embedded password from this combined copy.
