@@ -33,11 +33,60 @@
         <button id="toggleConfirmPassword" type="button" aria-label="Show confirm password" aria-pressed="false">Show</button>
       </div>
       <p id="passwordMatch" class="email-status" role="status"></p>
+      
+      <!-- Task C: Privacy Policy Acknowledgement -->
+      <div class="privacy-acknowledgement">
+        <label for="privacyCheckbox" class="privacy-label">
+          <input
+            type="checkbox"
+            id="privacyCheckbox"
+            name="privacy_acknowledged"
+            required
+          >
+
+          <span>
+            I have read the
+            <a href="privacy.html" target="_blank" rel="noopener">
+              Privacy Policy
+            </a>.
+          </span>
+        </label>
+
+        <p id="privacyError"
+          class="privacy-error"
+          role="alert"
+          aria-live="polite"></p>
+      </div>
+      <!-- Task C: Privacy Policy Acknowledgement -->
+      
       <p id="registerSuccess" class="success" role="status"></p>
       <p id="registerError" class="error" role="alert"></p>
       <button class="submit" id="registerButton" type="submit">Create account</button>
       <noscript><p>Please enable JavaScript to create an account.</p></noscript>
     </form>
+    
+     <!-- Task C: Privacy Checkbox Validation -->
+    <script>
+      const privacyCheckbox = document.getElementById('privacyCheckbox');
+      const privacyError = document.getElementById('privacyError');
+
+      privacyCheckbox.addEventListener('invalid', function(event) {
+        event.preventDefault();
+
+        privacyError.textContent =
+          'Please acknowledge the Privacy Policy before continuing.';
+
+        privacyCheckbox.setAttribute('aria-invalid', 'true');
+      });
+
+      privacyCheckbox.addEventListener('change', function() {
+        if (privacyCheckbox.checked) {
+          privacyError.textContent = '';
+          privacyCheckbox.removeAttribute('aria-invalid');
+        }
+      });
+    </script>
+    
     <p class="account-link">Already have an account? <a href="login.html">Log in</a></p>
     <p class="footer">Your days. Your thoughts. Your diary.</p>
   </main>
