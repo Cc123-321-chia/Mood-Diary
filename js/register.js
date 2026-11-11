@@ -110,11 +110,23 @@
     button.disabled = true;
     button.textContent = 'Creating account…';
     try {
-      const response = await fetch(form.action, {
-        method: 'POST', credentials: 'same-origin',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: document.getElementById('name').value.trim(), confirmPassword: confirm.value, email: document.getElementById('email').value.trim(), password: password.value })
-      });
+     
+    const response = await fetch(form.action, {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: document.getElementById('name').value.trim(),
+        confirmPassword: confirm.value,
+        email: document.getElementById('email').value.trim(),
+        password: password.value,
+    
+        // Task C: Privacy Policy Acknowledgement
+        privacy_acknowledged:
+          document.getElementById('privacyCheckbox').checked
+      })
+    });
+
       const data = await response.json();
       if (!response.ok || !data.ok) throw new Error(data.error || 'Unable to create an account. Please try again.');
       emailCheckVersion++;
