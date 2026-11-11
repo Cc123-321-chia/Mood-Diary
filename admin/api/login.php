@@ -16,8 +16,31 @@ try {
     $stmt = $pdo->prepare('SELECT admin_id, password_hash, must_change_password FROM admins WHERE email = ? LIMIT 1');
     $stmt->execute([$email]);
     $admin = $stmt->fetch();
-    $hash = $admin['password_hash'] ?? '$2y$10$92IXUNjOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2uheWG/igi.';
+    $hash = $admin['password_hash'] ?? '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2uheWG/igi.';
+    $ip = substr((string)($_SERVER['REMOTE_ADDR'] ?? ''), 0, 45);
+    // Lock only this account; shared IPs must not lock unrelated users.
+    $lock = $pdo->prepare('
+        SELECT COUNT(*) FROM login_attempts
+        WHERE account_type = "admin" AND success = 0
+          AND attempted_at > DATE_SUB(NOW(), INTERVAL 15 MINUTE)
+          AND email = ?
+    ');
+    $lock->execute([$email]);
+    if ((int)$lock->fetchColumn() >= 5) {
+        authError(429, 'Too many attempts. Try again in 15 minutes.');
+    }
+
     $verified = password_verify($password, $hash);
+    $record = $pdo->prepare('
+        INSERT INTO login_attempts(account_type, email, ip_address, user_agent, success)
+        VALUES("admin", ?, ?, ?, ?)
+    ');
+    $record->execute([
+        $email,
+        $ip,
+        substr((string)($_SERVER['HTTP_USER_AGENT'] ?? ''), 0, 255),
+        ($admin && $verified) ? 1 : 0,
+    ]);
     if (!$admin || !$verified) {
         $log = $pdo->prepare("INSERT INTO security_logs(event_type,description,ip_address,user_agent) VALUES('ADMIN_LOGIN_FAILED',?,?,?)");
         $log->execute(['Failed admin login attempt for ' . $email, substr((string)($_SERVER['REMOTE_ADDR'] ?? ''), 0, 45) ?: null, substr((string)($_SERVER['HTTP_USER_AGENT'] ?? ''), 0, 255) ?: null]);
@@ -33,6 +56,7 @@ try {
     ];
     $log = $pdo->prepare("INSERT INTO security_logs(admin_id,event_type,description,ip_address,user_agent) VALUES(?,'ADMIN_LOGIN_SUCCESS',?,?,?)");
     $log->execute([(int)$admin['admin_id'], 'Administrator signed in successfully.', substr((string)($_SERVER['REMOTE_ADDR'] ?? ''), 0, 45) ?: null, substr((string)($_SERVER['HTTP_USER_AGENT'] ?? ''), 0, 255) ?: null]);
+    $pdo->prepare('DELETE FROM login_attempts WHERE account_type = "admin" AND email = ? AND success = 0')->execute([$email]);
     echo json_encode([
         'ok' => true,
         'must_change_password' => (bool)$admin['must_change_password'],
