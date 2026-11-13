@@ -1,0 +1,10 @@
+# Task C - HTTPS Enforcement
+RewriteEngine On
+
+# Block unencrypted API requests
+RewriteCond %{HTTPS} !=on
+RewriteRule ^api(/|$) - [F,L]
+
+# Redirect HTTP pages to HTTPS
+RewriteCond %{HTTPS} !=on
+RewriteRule ^(.*)$ https://localhost/mood_diary/$1 [R=302,L]

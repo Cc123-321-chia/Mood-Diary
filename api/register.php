@@ -23,6 +23,15 @@ if (strlen($password) > 72 || strpos($password, "\0") !== false) {
 if ($password !== $confirmation) {
     authError(422, 'Passwords do not match.');
 }
+
+// Task C: Privacy Policy Acknowledgement Validation
+if (($input['privacy_acknowledged'] ?? null) !== true) {
+    authError(
+        422,
+        'Please acknowledge the Privacy Policy before continuing.'
+    );
+}
+
 require_once __DIR__ . '/../config/db.php';
 try {
     $pdo->beginTransaction();
