@@ -25,7 +25,7 @@ $admin = requireAdmin();
   <link rel="stylesheet" href="admin-logout.css">
 </head>
 <body><div class="admin-layout">
-  <aside class="sidebar"><a class="brand" href="index.php"><span class="brand-mark">📔</span><span>Mood Diary<br><small class="muted">Admin workspace</small></span></a><div class="side-label">Workspace</div><nav class="nav"><a href="index.php"><span class="nav-icon">⌂</span> Dashboard</a><a href="users.php"><span class="nav-icon">♙</span> Users</a><a class="active" href="security_logs.php"><span class="nav-icon">◷</span> Security logs</a></nav><div class="sidebar-note">Manage accounts and review activity across Mood Diary.</div>    <button class="admin-logout" id="adminLogout" type="button">Log out</button><p class="logout-error" id="logoutError" role="alert"></p>
+  <aside class="sidebar"><a class="brand" href="index.php"><span class="brand-mark">📔</span><span>Mood Diary<br><small class="muted">Admin workspace</small></span></a><div class="side-label">Workspace</div><nav class="nav"><a href="index.php"><span class="nav-icon">⌂</span> Dashboard</a><a href="users.php"><span class="nav-icon">♙</span> Users</a><a class="active" href="security_logs.php"><span class="nav-icon">◷</span> Security logs</a><a href="php_updates.php"><span class="nav-icon">⬆</span> PHP update monitor</a></nav><div class="sidebar-note">Manage accounts and review activity across Mood Diary.</div>    <button class="admin-logout" id="adminLogout" type="button">Log out</button><p class="logout-error" id="logoutError" role="alert"></p>
   </aside>
   <main class="admin-main">
   <header class="page-heading"><div><h1>Security Logs</h1><p class="sub">Review security activity across all users and administrators.</p></div></header>
