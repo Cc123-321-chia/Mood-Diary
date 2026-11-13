@@ -1,10 +1,13 @@
-# Task C - HTTPS Enforcement
 RewriteEngine On
 
-# Block unencrypted API requests
+# Block unencrypted API requests.
 RewriteCond %{HTTPS} !=on
 RewriteRule ^api(/|$) - [F,L]
 
-# Redirect HTTP pages to HTTPS
+# Redirect HTTP pages to HTTPS.
 RewriteCond %{HTTPS} !=on
 RewriteRule ^(.*)$ https://localhost/mood_diary/$1 [R=302,L]
+
+<IfModule mod_headers.c>
+    Header always set Content-Security-Policy "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; img-src 'self' data: blob: https:; font-src 'self' data: https://cdnjs.cloudflare.com; connect-src 'self'; media-src 'self' data: blob:"
+</IfModule>
