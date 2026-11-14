@@ -1,3 +1,12 @@
+# Block directory listing
+Options -Indexes
+
+# Block access to .git and other sensitive dotfiles
+RedirectMatch 404 /\.git
+RedirectMatch 404 /\.env
+RedirectMatch 404 /\.htaccess
+RedirectMatch 404 /\.htpasswd
+
 # Task C - HTTPS Enforcement
 RewriteEngine On
 
