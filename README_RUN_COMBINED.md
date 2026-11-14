@@ -42,6 +42,8 @@ For a **fresh install**, import [`database/mood_diary_full.sql`](database/mood_d
 
 For an **existing database**, do not use that full-install file as a schema updater: `CREATE TABLE IF NOT EXISTS` will not alter tables already present. Apply only the required migrations, such as `database/admin_temporary_password.sql` if the `admins.must_change_password` column is missing. The standalone `database/security_logs.sql` is available if the existing database lacks the audit table.
 
+The admin PHP release monitor requires `database/php_update_management.sql`. Run it once in phpMyAdmin with `mood_diary` selected. The monitor checks the official PHP HTTPS releases feed and stores a 24-hour cache and update-attempt history. On Windows/XAMPP, installation remains a manual XAMPP administrator task; the app deliberately does not replace PHP binaries or execute package-manager commands. Automatic security installation is unavailable until a controlled updater is explicitly configured.
+
 ## 4. Open the system
 
 Open:

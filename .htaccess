@@ -1,10 +1,40 @@
+# Block directory listing
+Options -Indexes
+
+# Block access to .git and other sensitive dotfiles
+RedirectMatch 404 /\.git
+RedirectMatch 404 /\.env
+RedirectMatch 404 /\.htaccess
+RedirectMatch 404 /\.htpasswd
+
 # Task C - HTTPS Enforcement
 RewriteEngine On
 
-# Block unencrypted API requests
+# Prevent Apache from listing files in directories without an index page.
+Options -Indexes
+
+# Block unencrypted API requests.
 RewriteCond %{HTTPS} !=on
 RewriteRule ^api(/|$) - [F,L]
 
-# Redirect HTTP pages to HTTPS
+# Redirect HTTP pages to HTTPS.
 RewriteCond %{HTTPS} !=on
 RewriteRule ^(.*)$ https://localhost/mood_diary/$1 [R=302,L]
+
+<IfModule mod_headers.c>
+    # Do not advertise the PHP version in an X-Powered-By response header.
+    Header always unset X-Powered-By
+    Header always set X-Content-Type-Options "nosniff"
+    # Legacy fallback for browsers and scanners that do not honor CSP frame-ancestors.
+    Header always set X-Frame-Options "SAMEORIGIN"
+    SetEnvIf Request_URI "^/mood_diary/?$" mood_diary_home
+    # Do not let browsers or proxies retain app pages or the dashboard response.
+    Header onsuccess unset Cache-Control env=mood_diary_home
+    Header always set Cache-Control "no-store, no-cache, must-revalidate" env=mood_diary_home
+    <FilesMatch "\.(?:html|php)$">
+        Header onsuccess unset Cache-Control env=!mood_diary_home
+        Header always set Cache-Control "no-store, no-cache, must-revalidate" env=!mood_diary_home
+    </FilesMatch>
+    Header always set Content-Security-Policy "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; img-src 'self' data: blob:; font-src 'self' data: https://cdnjs.cloudflare.com; connect-src 'self'; media-src 'self' data: blob:" env=!mood_diary_home
+    Header always set Content-Security-Policy "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'self'; script-src 'self'; style-src 'self' https://cdnjs.cloudflare.com; img-src 'self' data: blob:; font-src 'self' data: https://cdnjs.cloudflare.com; connect-src 'self'; media-src 'self' data: blob:" env=mood_diary_home
+</IfModule>
