@@ -186,7 +186,7 @@
       renderCalendar(state.currentYear, state.currentMonth);
     } catch (err) {
       console.error('Failed to load diaries:', err);
-      diaryGrid.innerHTML = `<div style="padding:2rem;color:var(--text-secondary);">⚠️ Could not load diary data. ${escapeHtml(err.message)}</div>`;
+      diaryGrid.innerHTML = `<div class="diary-load-error">⚠️ Could not load diary data. ${escapeHtml(err.message)}</div>`;
       calendarGrid.innerHTML = '';
     }
   }

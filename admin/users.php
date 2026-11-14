@@ -37,6 +37,7 @@ $admin = requireAdmin();
                 <a href="index.php"><span class="admin-nav-icon">⌂</span> Dashboard</a>
                 <a class="active" href="users.php"><span class="admin-nav-icon">♙</span> Users</a>
                 <a href="security_logs.php"><span class="admin-nav-icon">◷</span> Security logs</a>
+                <a href="php_updates.php"><span class="admin-nav-icon">⬆</span> PHP update monitor</a>
             </nav>
             <div class="admin-sidebar-note">Manage user accounts and review security activity.</div>
             <button class="admin-logout" id="adminLogout" type="button">Log out</button>
